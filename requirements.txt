@@ -1,0 +1,10 @@
+
+requests
+aiohttp
+beautifulsoup4
+tqdm
+fake-useragent
+plyer
+lxml
+selenium
+```
