@@ -39,23 +39,10 @@ HEADERS = {
     'User-Agent': ua.random
 }
 
-# Extended list of supported file types, including more advanced types
+# Extended list of supported file types
 ALL_RESOURCE_TYPES = [
-    '.php', '.php2', '.php3', '.php4', '.php5', '.html', '.htm', '.xhtml', '.css', '.scss',
-    '.js', '.mjs', '.json', '.asp', '.aspx', '.axd', '.ashx', '.cshtml', '.jsp', '.jspx',
-    '.java', '.c', '.cpp', '.h', '.cs', '.pl', '.py', '.rb', '.rhtml', '.erb', '.xml', '.xsl',
-    '.xslt', '.svg', '.yaml', '.yml', '.md', '.txt', '.jspa', '.jstl', '.dhtml',
-    '.shtml', '.phtml', '.razor', '.csp', '.jspx', '.sass', '.less', '.jsonld',
-    '.pyc', '.dll', '.cgi', '.swift', '.kt', '.jar', '.war', '.ear', '.zip', '.tar', '.gz',
-    '.rar', '.7z', '.bz2', '.dmg', '.iso', '.shar', '.xz', '.pem', '.p7b', '.p7c', '.p12',
-    '.crt', '.cer', '.key', '.der', '.csr', '.eot', '.woff', '.woff2', '.ttf', '.otf', '.psd',
-    '.ai', '.bmp', '.gif', '.jpeg', '.jpg', '.png', '.webp', '.ico', '.mp3', '.wav',
-    '.flac', '.mp4', '.avi', '.mov', '.mkv', '.ogv', '.ogx', '.ogm', '.ogg', '.oga',
-    '.webm', '.m4v', '.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.odt',
-    '.ods', '.odp', '.otf', '.otg', '.ott', '.wpd', '.wps', '.xps', '.csv', '.rtf', '.tar.gz',
-    '.tar.bz2', '.tgz', '.xz', '.rar', '.jar', '.json', '.svg', '.ps', '.eps', '.sql', '.bak',
-    '.eml', '.msg', '.dat', '.db', '.log', '.bak', '.tmp', '.conf', '.ini', '.env', '.bat',
-    '.sh', '.cmd', '.exe', '.dll', '.apk', '.exe', '.msi', '.deb', '.rpm', '.py', '.sh'
+    '.php', '.html', '.css', '.js', '.json', '.xml', '.jpg', '.png', '.gif', '.pdf', '.zip', 
+    # Add other extensions as necessary
 ]
 
 def print_banner():
@@ -172,13 +159,11 @@ def load_cookies(filepath):
     return requests.cookies.RequestsCookieJar()
 
 def extract_all_cookies(session):
-    """Extract all cookies from the session and return them."""
     cookies_dict = requests.utils.dict_from_cookiejar(session.cookies)
     logging.info(f"Extracted cookies: {cookies_dict}")
     return cookies_dict
 
 def advanced_vulnerability_checks(html_content, url):
-    """Advanced check for common vulnerabilities in the HTML content."""
     vulnerabilities = []
 
     if '<script>alert(' in html_content.lower() or re.search(r'<script>.*</script>', html_content, re.IGNORECASE):
@@ -196,7 +181,7 @@ def advanced_vulnerability_checks(html_content, url):
     if re.search(r'http[s]?:\/\/(?:localhost|127\.0\.0\.1|::1|intranet|internal)', html_content, re.IGNORECASE):
         vulnerabilities.append("Potential SSRF vulnerability found!")
 
-    if re.search(r'(\||&|;||\$)', html_content):
+    if re.search(r'(\||&|;|\$)', html_content):
         vulnerabilities.append("Potential Command Injection vulnerability found!")
 
     if re.search(r'(\.\./|\.\./\.\./)', html_content):
@@ -277,7 +262,7 @@ def parse_and_download(session, urls, base_url, save_dir, visited, delay, max_de
                         elif tag == 'a':
                             parse_and_download(session, [resource_url], base_url, save_dir, visited, delay, max_depth, current_depth + 1, exclude_types, max_file_size, overwrite, queue, speed_limit, resume)
 
-        save_path is sanitize_filename(save_path)
+        save_path = sanitize_filename(save_path)
         with open(save_path, 'w', encoding='utf-8') as file:
             file.write(soup.prettify())
             logging.info(f"Saved: {save_path}")
@@ -335,30 +320,30 @@ async def main():
     parser.add_argument('--cookie-jar', type=str, help='Specify a file to save cookies in cookie jar format')
     parser.add_argument('--auto-retry', action='store_true', help='Automatically retry failed downloads')
     parser.add_argument('--chunk-size', type=int, default=8192, help='Specify chunk size for downloads (in bytes)')
-    parser.add_argument('--follow-redirects', action='store_true', help='Follow HTTP redirects')
+    parser.add_argument('--follow-redirects', action='store-true', help='Follow HTTP redirects')
     parser.add_argument('--proxy-auth', type=str, help='Specify username and password for proxy authentication')
     parser.add_argument('--max-redirects', type=int, default=10, help='Maximum number of redirects to follow')
-    parser.add_argument('--debug', action='store_true', help='Enable debug mode')
-    parser.add_argument('--json-output', action='store_true', help='Output results in JSON format')
+    parser.add_argument('--debug', action='store-true', help='Enable debug mode')
+    parser.add_argument('--json-output', action='store-true', help='Output results in JSON format')
     parser.add_argument('--screenshot', type=str, help='Take a screenshot of the webpage and save it')
     parser.add_argument('--webdriver-path', type=str, help='Path to the WebDriver executable')
-    parser.add_argument('--include-subdomains', action='store_true', help='Include subdomains in the download')
-    parser.add_argument('--save-headers', action='store_true', help='Save response headers to a file')
+    parser.add_argument('--include-subdomains', action='store-true', help='Include subdomains in the download')
+    parser.add_argument('--save-headers', action='store-true', help='Save response headers to a file')
     parser.add_argument('--custom-header', action='append', help='Add custom headers to the request')
     parser.add_argument('--filter-status', type=int, nargs='+', help='Download only files with specific HTTP status codes')
-    parser.add_argument('--check-robots', action='store_true', help='Check robots.txt before downloading')
-    parser.add_argument('--download-images', action='store_true', help='Download all images from the webpage')
-    parser.add_argument('--download-scripts', action='store_true', help='Download all JavaScript files from the webpage')
-    parser.add_argument('--download-css', action='store_true', help='Download all CSS files from the webpage')
+    parser.add_argument('--check-robots', action='store-true', help='Check robots.txt before downloading')
+    parser.add_argument('--download-images', action='store-true', help='Download all images from the webpage')
+    parser.add_argument('--download-scripts', action='store-true', help='Download all JavaScript files from the webpage')
+    parser.add_argument('--download-css', action='store-true', help='Download all CSS files from the webpage')
     parser.add_argument('--custom-filename', type=str, help='Save downloaded file with a custom filename')
-    parser.add_argument('--parse-json', action='store_true', help='Parse JSON responses and save them')
-    parser.add_argument('--check-csrf', action='store_true', help='Check for CSRF tokens in forms')
+    parser.add_argument('--parse-json', action='store-true', help='Parse JSON responses and save them')
+    parser.add_argument('--check-csrf', action='store-true', help='Check for CSRF tokens in forms')
     parser.add_argument('--random-delay', type=int, help='Add a random delay between requests (in seconds)')
-    parser.add_argument('--rotate-proxies', type=str, help='Rotate between multiple proxy servers')
-    parser.add_argument('--rate-limit-requests', type=int, help='Limit the number of requests per second')
-    parser.add_argument('--hide-browser', action='store_true', help='Hide the browser window during execution')
-    parser.add_argument('--save-html', action='store_true', help='Save the entire HTML content of the page')
-    parser.add_argument('--minify-html', action='store_true', help='Minify HTML content before saving')
+    parser.add_argument('--rotate-proxies', action='store-true', help='Rotate between multiple proxy servers')
+    parser.add_argument('--rate-limit-requests', action='store-true', help='Limit the number of requests per second')
+    parser.add_argument('--hide-browser', action='store-true', help='Hide the browser window during execution')
+    parser.add_argument('--save-html', action='store-true', help='Save the entire HTML content of the page')
+    parser.add_argument('--minify-html', action='store-true', help='Minify HTML content before saving')
 
     args = parser.parse_args()
 
